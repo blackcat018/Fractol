@@ -1,29 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moel-idr <moel-idr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/30 00:02:51 by moel-idr          #+#    #+#             */
-/*   Updated: 2025/03/30 01:01:39 by moel-idr         ###   ########.fr       */
+/*   Created: 2024/10/23 15:56:37 by moel-idr          #+#    #+#             */
+/*   Updated: 2024/11/05 14:34:41 by moel-idr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes.h"
+#include "libft.h"
 
-void	instructions(void)
+size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 {
-	write(1, "Use following commands.\n", 24);
-	write(1, "Mandelbrot\n", 11);
-	write(1, "Julia\n", 6);
-	write(1, "Julia can take 2 parametrs between -2.0 and 2.0\n", 48);
-	write(1, "Burningship\n", 12);
-	exit(0);
-}
+	size_t	i;
+	size_t	src_len;
 
-
-int	create_trgb(int t, int r, int g, int b)
-{
-	return (t << 24 | g << 16 | r << 8 | b);
+	i = 0;
+	src_len = ft_strlen(src);
+	if (size == 0)
+	{
+		return (src_len);
+	}
+	while (i < size - 1 && src[i] != '\0')
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (src_len);
 }

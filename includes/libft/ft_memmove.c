@@ -1,29 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moel-idr <moel-idr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/30 00:02:51 by moel-idr          #+#    #+#             */
-/*   Updated: 2025/03/30 01:01:39 by moel-idr         ###   ########.fr       */
+/*   Created: 2024/10/23 14:56:53 by moel-idr          #+#    #+#             */
+/*   Updated: 2024/11/07 09:14:53 by moel-idr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes.h"
+#include "libft.h"
 
-void	instructions(void)
+void	*ft_memmove(void *dest, const void *src, size_t n)
 {
-	write(1, "Use following commands.\n", 24);
-	write(1, "Mandelbrot\n", 11);
-	write(1, "Julia\n", 6);
-	write(1, "Julia can take 2 parametrs between -2.0 and 2.0\n", 48);
-	write(1, "Burningship\n", 12);
-	exit(0);
-}
+	size_t	i;
 
-
-int	create_trgb(int t, int r, int g, int b)
-{
-	return (t << 24 | g << 16 | r << 8 | b);
+	if (dest == src)
+		return (dest);
+	i = 0;
+	if (src < dest)
+	{
+		i = n;
+		while (i > 0)
+		{
+			i--;
+			((unsigned char *)dest)[i] = ((unsigned char *)src)[i];
+		}
+	}
+	else
+	{
+		i = 0;
+		while (i < n)
+		{
+			((unsigned char *)dest)[i] = ((unsigned char *)src)[i];
+			i++;
+		}
+	}
+	return (dest);
 }

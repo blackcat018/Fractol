@@ -1,29 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moel-idr <moel-idr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/30 00:02:51 by moel-idr          #+#    #+#             */
-/*   Updated: 2025/03/30 01:01:39 by moel-idr         ###   ########.fr       */
+/*   Created: 2024/10/24 12:50:03 by moel-idr          #+#    #+#             */
+/*   Updated: 2024/11/04 21:24:57 by moel-idr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes.h"
+#include "libft.h"
 
-void	instructions(void)
+void	*ft_calloc(size_t count, size_t size)
 {
-	write(1, "Use following commands.\n", 24);
-	write(1, "Mandelbrot\n", 11);
-	write(1, "Julia\n", 6);
-	write(1, "Julia can take 2 parametrs between -2.0 and 2.0\n", 48);
-	write(1, "Burningship\n", 12);
-	exit(0);
-}
+	void	*ptr;
 
-
-int	create_trgb(int t, int r, int g, int b)
-{
-	return (t << 24 | g << 16 | r << 8 | b);
+	if (count == 0 || size == 0)
+	{
+		return (malloc(0));
+	}
+	if (count > SIZE_MAX / size)
+		return (NULL);
+	ptr = malloc(count * size);
+	if (!ptr)
+		return (NULL);
+	ft_bzero(ptr, count * size);
+	return (ptr);
 }

@@ -1,29 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moel-idr <moel-idr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/30 00:02:51 by moel-idr          #+#    #+#             */
-/*   Updated: 2025/03/30 01:01:39 by moel-idr         ###   ########.fr       */
+/*   Created: 2024/10/26 15:25:19 by moel-idr          #+#    #+#             */
+/*   Updated: 2024/11/07 08:00:42 by moel-idr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes.h"
+#include "libft.h"
 
-void	instructions(void)
+char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	write(1, "Use following commands.\n", 24);
-	write(1, "Mandelbrot\n", 11);
-	write(1, "Julia\n", 6);
-	write(1, "Julia can take 2 parametrs between -2.0 and 2.0\n", 48);
-	write(1, "Burningship\n", 12);
-	exit(0);
-}
+	unsigned int	i;
+	char			*res;
+	unsigned int	len;
 
-
-int	create_trgb(int t, int r, int g, int b)
-{
-	return (t << 24 | g << 16 | r << 8 | b);
+	if (!s || !f)
+		return (NULL);
+	i = 0;
+	len = ft_strlen(s);
+	res = malloc((len + 1) * sizeof(char));
+	if (!res)
+		return (NULL);
+	while (i < len)
+	{
+		res[i] = f(i, s[i]);
+		i++;
+	}
+	res[i] = '\0';
+	return (res);
 }

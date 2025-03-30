@@ -1,29 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moel-idr <moel-idr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/30 00:02:51 by moel-idr          #+#    #+#             */
-/*   Updated: 2025/03/30 01:01:39 by moel-idr         ###   ########.fr       */
+/*   Created: 2024/10/26 17:19:01 by moel-idr          #+#    #+#             */
+/*   Updated: 2024/11/04 21:22:11 by moel-idr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes.h"
+#include "libft.h"
 
-void	instructions(void)
+void	ft_putnbr_fd(int n, int fd)
 {
-	write(1, "Use following commands.\n", 24);
-	write(1, "Mandelbrot\n", 11);
-	write(1, "Julia\n", 6);
-	write(1, "Julia can take 2 parametrs between -2.0 and 2.0\n", 48);
-	write(1, "Burningship\n", 12);
-	exit(0);
-}
-
-
-int	create_trgb(int t, int r, int g, int b)
-{
-	return (t << 24 | g << 16 | r << 8 | b);
+	if (fd < 0)
+		return ;
+	if (n == -2147483648)
+		ft_putstr_fd("-2147483648", fd);
+	else if (n < 0)
+	{
+		ft_putchar_fd('-', fd);
+		n = -n;
+		ft_putnbr_fd(n, fd);
+	}
+	else if (n >= 10)
+	{
+		ft_putnbr_fd(n / 10, fd);
+		ft_putchar_fd(n % 10 + '0', fd);
+	}
+	else
+		ft_putchar_fd(n + '0', fd);
 }
