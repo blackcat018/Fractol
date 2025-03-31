@@ -4,7 +4,13 @@ CFLAGS = -Wall -Wextra -Werror
 
 # Use brew's path to glfw
 GLFW_PATH = /goinfre/moel-idr/homebrew/Cellar/glfw/3.4
-LDFLAGS = -Lincludes/libft -lft -Lincludes/MLX42/build -lmlx42 -L$(GLFW_PATH)/lib -lglfw -framework Cocoa -framework OpenGL -framework IOKit
+LDFLAGS = -Lincludes/libft -lft \
+          -Lincludes/MLX42/build -lmlx42 \
+          -L$(GLFW_PATH)/lib -lglfw \
+          -lGL -lGLU -lX11 -lXrandr -lXinerama -lXcursor -lXi \
+          -lm -lpthread -ldl -lrt
+
+#LDFLAGS = -Lincludes/libft -lft -Lincludes/MLX42/build -lmlx42 -L$(GLFW_PATH)/lib -lglfw -framework Cocoa -framework OpenGL -framework IOKit
 
 # Source files
 SRC_DIR = .

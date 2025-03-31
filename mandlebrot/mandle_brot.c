@@ -18,10 +18,10 @@ void	param_init_m(t_params *params)
 	params->max_r = 1.0;
 	params->min_i = -1.5;
 	params->max_i = 1.5;
-	params->r = 2;
-	params->g = 2;
+	params->r = 0;
+	params->g = 0;
 	params->max_iter = 100;
-	params->b = 2;
+	params->b = 0;
 	params->fractol_type = 1;
 	params->img = NULL;
 }
@@ -49,7 +49,7 @@ int	mandelbrot_set(t_complex c, int max_iter)
 	return (i);
 }
 
-uint32_t get_mandelbrot_color(int iter, int max_iter)
+uint32_t get_mandelbrot_color(int iter, int max_iter, t_params *p)
 {
     double t;
     uint8_t red, green, blue;
@@ -59,9 +59,9 @@ uint32_t get_mandelbrot_color(int iter, int max_iter)
     else
     {
         t = (double)iter / max_iter;
-        red = (uint8_t)(8 * (1 - t) * (1 - t) * (1 - t) * t * 255);
-        green = (uint8_t)(255);
-        blue = (uint8_t)(8 * (1 - t) * (1 - t) * (1 - t) * t * 255);
+        red = (uint8_t)(8 * (1 - t) * (1 - t) * (1 - t) * t * 255) + p->r;
+        green = (uint8_t)(255) + p->g;
+        blue = (uint8_t)(8 * (1 - t) * (1 - t) * (1 - t) * t * 255) + p->b;
         return create_trgb(255, green, blue, red);
     }
 }
@@ -88,7 +88,7 @@ void	draw_mandelbrot(t_params *p)
 			c.r = p->min_r + (p->max_r - p->min_r) * x / (W_WIDTH - 1.0);
 			c.i = p->min_i + (p->max_i - p->min_i) * y / (W_HEIGHT - 1.0);
 			iter = mandelbrot_set(c, p->max_iter);
-			color = get_mandelbrot_color(iter, p->max_iter);
+			color = get_mandelbrot_color(iter, p->max_iter,p);
 			mlx_put_pixel(p->img, x, y, color);
 			x++;
 		}

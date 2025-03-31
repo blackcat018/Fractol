@@ -20,10 +20,10 @@ void	param_init_j(t_params *params, char *av2, char *av3)
 	params->max_r = 1.0;
 	params->min_i = -1.0;
 	params->max_i = 1.0;
-	params->max_iter = 1000;
-	params->r = 128;
-	params->g = 128;
-	params->b = 128;
+	params->max_iter = 100;
+	params->r = 0;
+	params->g = 0;
+	params->b = 0;
 	params->color_mode = 0;
 	params->fractol_type = 2;
 	params->img = NULL;
@@ -35,28 +35,19 @@ void	param_init_j(t_params *params, char *av2, char *av3)
 	}
 }
 
-uint32_t get_julia_color(int iter, int max_iter)
+uint32_t get_julia_color(int iter, int max_iter, t_params *p)
 {
     double t;
     uint8_t red, green, blue;
-
     if (iter == max_iter)
-        return (create_trgb(255, 0, 0, 0)); // Black for points inside the set
-
+        return create_trgb(255, 0, 0, 0); // Black for points inside the set
     t = (double)iter / max_iter;
-    
-    // Use the same Burning Ship color formula
-    red   = (uint8_t)(5 * (t) * pow(1 - t, 1) * 255);
-    green = (uint8_t)(5 * pow(1 - t, 3) * pow(t, 2) * 255);
-    blue  = (uint8_t)(10 * pow(1 - t, 2) * (t) * 255);
-
-    // Clamp values to 0-255 (safety check)
-    red   = (red > 255) ? 255 : red;
-    green = (green > 255) ? 255 : green;
-    blue  = (blue > 255) ? 255 : blue;
-
-    return (create_trgb(255, red, green, blue));
+    red   = (uint8_t)(5 * (t) * pow(1 - t, 1) * 255) + p->r;
+    green = (uint8_t)(5 * pow(1 - t, 3) * pow(t, 2) * 255) + p->g;
+    blue  = (uint8_t)(10 * pow(1 - t, 2) * (t) * 255) + p->b;
+    return create_trgb(255, red, green, blue);
 }
+
 
 int	julia_set(t_complex z, t_complex c, int max_iter)
 {
@@ -83,23 +74,28 @@ void draw_julia(t_params *p)
     uint32_t color;
     int y, x, iter;
 
-	if (p->img)
-		(mlx_delete_image(p->mlx, p->img), (p->img = NULL));
+    if (p->img)
+        (mlx_delete_image(p->mlx, p->img), (p->img = NULL));
     if (!p->img)
         p->img = mlx_new_image(p->mlx, W_WIDTH, W_HEIGHT);
     if (!p->img)
         return;
     mlx_image_to_window(p->mlx, p->img, 0, 0);
 
-    for (y = 0; y < W_HEIGHT; y++)
+    y = 0;
+    while (y < W_HEIGHT)
     {
-        for (x = 0; x < W_WIDTH; x++)
+        x = 0;
+        while (x < W_WIDTH)
         {
             z.r = p->min_r + (p->max_r - p->min_r) * x / (W_WIDTH - 1.0);
             z.i = p->max_i - (p->max_i - p->min_i) * y / (W_HEIGHT - 1.0);
             iter = julia_set(z, p->julia_c, p->max_iter);
-            color = get_julia_color(iter, p->max_iter); // Now uses Burning Ship colors
+            color = get_julia_color(iter, p->max_iter, p); // Now uses Burning Ship colors
             mlx_put_pixel(p->img, x, y, color);
+            x++;
         }
+        y++;
     }
 }
+
