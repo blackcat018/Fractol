@@ -2,53 +2,79 @@ NAME = fractol
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
-# Use brew's path to glfw
 GLFW_PATH = /goinfre/moel-idr/homebrew/Cellar/glfw/3.4
+
 LDFLAGS = -Lincludes/libft -lft \
           -Lincludes/MLX42/build -lmlx42 \
           -L$(GLFW_PATH)/lib -lglfw \
-          -lGL -lGLU -lX11 -lXrandr -lXinerama -lXcursor -lXi \
-          -lm -lpthread -ldl -lrt
+          -framework Cocoa -framework OpenGL -framework IOKit
 
-#LDFLAGS = -Lincludes/libft -lft -Lincludes/MLX42/build -lmlx42 -L$(GLFW_PATH)/lib -lglfw -framework Cocoa -framework OpenGL -framework IOKit
-
-# Source files
-SRC_DIR = .
-SRC = julia/julia.c mandlebrot/mandle_brot.c parce/parce.c utils/keys.c utils/utils.c utils/keys_help.c main.c burningship/burning_ship.c
+SRC_DIR = mandetory/
+SRC = $(SRC_DIR)julia/julia.c \
+	   $(SRC_DIR)mandlebrot/mandle_brot.c \
+	   $(SRC_DIR)parce/parce.c \
+	   $(SRC_DIR)utils/keys.c \
+	   $(SRC_DIR)utils/utils.c \
+	   $(SRC_DIR)utils/keys_help.c \
+	   $(SRC_DIR)main.c
 OBJ = $(SRC:.c=.o)
 
-# Library paths
+BON_DIR = Bonus/
+BON_SRC = $(BON_DIR)burningship_bonus/burning_ship.c \
+          $(BON_DIR)julia_bonus/julia_bonus.c \
+          $(BON_DIR)mandlebrot_bonus/mandle_brot_bonus.c \
+          $(BON_DIR)utils_bonus/keys_bonus.c \
+          $(BON_DIR)utils_bonus/keys_help_bonus.c \
+          $(BON_DIR)utils_bonus/utils_bonus.c \
+          $(BON_DIR)parce_bonus/parce_bonus.c \
+          $(BON_DIR)main_bonus.c
+BON_OBJ = $(BON_SRC:.c=.o)
+
 LIBFT_DIR = includes/libft
 MLX_DIR = includes/MLX42
+MLX_LIB = $(MLX_DIR)/build/libmlx42.a
 
 all: $(NAME)
 
-$(NAME): $(OBJ) includes.h
-	$(MAKE) -C $(LIBFT_DIR)
+$(NAME): $(OBJ) $(MLX_LIB)
+	@echo "🔧 Building the libft..."
+	@$(MAKE) -C $(LIBFT_DIR)
+	@echo "🔧 Building standard version..."
+	@$(CC) $(CFLAGS) -o $@ $(OBJ) $(LDFLAGS)
+	@echo "✅ Standard build complete!"
+
+%.o: %.c fractol.h
+	@$(CC) $(CFLAGS) -Iincludes -I$(LIBFT_DIR) -I$(MLX_DIR)/include -c $< -o $@
+
+bonus: $(BON_OBJ)
+	@$(MAKE) -C $(LIBFT_DIR)
+	@echo "🔧 Building bonus version..."
+	@$(CC) $(CFLAGS) -o $(NAME) $(BON_OBJ) $(LDFLAGS)
+	@echo "✅ Bonus build complete!"
+
+$(MLX_LIB):
 	@if [ ! -d "$(MLX_DIR)/build" ]; then \
+		echo "🛠️  Building MLX42..."; \
 		mkdir -p $(MLX_DIR)/build; \
 		cmake -S $(MLX_DIR) -B $(MLX_DIR)/build; \
 		cmake --build $(MLX_DIR)/build; \
 	fi
-	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LDFLAGS)
 
-%.o: %.c
-	$(CC) $(CFLAGS) -Iincludes -I$(LIBFT_DIR) -I$(MLX_DIR)/include -c $< -o $@
+$(BON_DIR)%.o: $(BON_DIR)%.c
+	@mkdir -p $(@D)  # Ensure output directory exists
+	@$(CC) $(CFLAGS) -Iincludes -I$(LIBFT_DIR) -I$(MLX_DIR)/include -c $< -o $@
+
 
 clean:
-	rm -f $(OBJ)
-	$(MAKE) -C $(LIBFT_DIR) clean
-	@if [ -d "$(MLX_DIR)/build" ]; then \
-		$(MAKE) -C $(MLX_DIR)/build clean; \
-	fi
+	@rm -f $(OBJ) $(BON_OBJ)
+	@$(MAKE) -C $(LIBFT_DIR) clean
+	@echo "🧹 Cleaned object files."
 
 fclean: clean
-	rm -f $(NAME)
-	$(MAKE) -C $(LIBFT_DIR) fclean
-	@if [ -d "$(MLX_DIR)/build" ]; then \
-		rm -rf $(MLX_DIR)/build; \
-	fi
+	@rm -f $(NAME)
+	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@echo "🧹🔥 Full clean complete."
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all bonus clean fclean re

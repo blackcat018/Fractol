@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   includes.h                                         :+:      :+:    :+:   */
+/*   fractol_bonus.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moel-idr <moel-idr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 00:03:25 by moel-idr          #+#    #+#             */
-/*   Updated: 2025/03/30 01:36:23 by moel-idr         ###   ########.fr       */
+/*   Updated: 2025/04/03 00:18:08 by moel-idr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FRACTOL_H
-# define FRACTOL_H
+#ifndef FRACTOL_BONUS_H
+# define FRACTOL_BONUS_H
 
-# include "includes/MLX42/include/MLX42/MLX42.h"
-# include "includes/libft/libft.h"
+# include "../includes/MLX42/include/MLX42/MLX42.h"
+# include "../includes/libft/libft.h"
 # include <math.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -23,24 +23,22 @@
 # define W_WIDTH 1000
 # define W_HEIGHT 1000
 
-// KEYS
-# define KEY_ESCAPE 256
-# define KEY_RIGHT 262
-# define KEY_LEFT 263
-# define KEY_DOWN 264
-# define KEY_UP 265
-# define KEY_R 82
-# define KEY_G 71
-# define KEY_B 66
-# define KEY_Z 87
-# define KEY_X 88
-# define KEY_C 67
-# define KEY_V 86
-# define KEY_PLUS 61
-# define KEY_MINUS 45
+# define KEY_ESCAPE MLX_KEY_ESCAPE
+# define KEY_RIGHT MLX_KEY_RIGHT
+# define KEY_LEFT MLX_KEY_LEFT
+# define KEY_DOWN MLX_KEY_DOWN
+# define KEY_UP MLX_KEY_UP
+# define KEY_R MLX_KEY_R
+# define KEY_G MLX_KEY_G
+# define KEY_B MLX_KEY_B
+# define KEY_W MLX_KEY_W
+# define KEY_X MLX_KEY_X
+# define KEY_C MLX_KEY_C
+# define KEY_V MLX_KEY_V
+# define KEY_PLUS MLX_KEY_EQUAL
+# define KEY_MINUS MLX_KEY_MINUS
 
-// Mouse buttons
-# define MOUSE_UP 4 // Scroll up
+# define MOUSE_UP 4
 # define MOUSE_DOWN 5
 
 typedef struct s_complex
@@ -51,33 +49,27 @@ typedef struct s_complex
 
 typedef struct s_params
 {
-	// MLX42 specific
 	mlx_t		*mlx;
 	mlx_image_t	*img;
 
-	// Fractal parameters
-	double min_r; // Replaced t_complex min
+	double		min_r;
 	double		max_r;
-	double min_i; // Replaced t_complex max
+	double		min_i;
 	double		max_i;
 
-	// Julia specific
-	t_complex julia_c; // Changed from 'julia' to 'julia_c' for clarity
+	t_complex	julia_c;
 
-	// Color parameters
 	int			r;
 	int			g;
 	int			b;
 
 	int			color_mode;
 
-	// Fractal type and other info
 	int			fractol_type;
 	char		*name;
 
 	int			max_iter;
 
-	// Additional parameters you might need
 	int			cur_iter;
 	int			scale;
 }				t_params;
@@ -102,13 +94,11 @@ double			ft_parce_it(const char *str);
 
 void			instructions(void);
 int				create_trgb(int t, int r, int g, int b);
-int				zoom(int key, int x, int y, t_params *p);
-void			zoom_in(t_params *p, double r, double i);
 void			zoom_out(t_params *p, double r, double i);
+void			zoom_in(t_params *p, double r, double i);
 void			key_arrows(int key, t_params *p);
 int				get_key(int key, t_params *p);
 void			scroll_handler(double xdelta, double ydelta, void *param);
 void			key_handler(mlx_key_data_t keydata, void *param);
-// void				open_win(t_params *params, char *av);
 
 #endif

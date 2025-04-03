@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   keys.c                                             :+:      :+:    :+:   */
+/*   keys_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moel-idr <moel-idr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 00:02:57 by moel-idr          #+#    #+#             */
-/*   Updated: 2025/03/30 03:03:32 by moel-idr         ###   ########.fr       */
+/*   Updated: 2025/04/03 00:44:27 by moel-idr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes.h"
+#include "../fractol_bonus.h"
 
 void	handle_key_action(mlx_key_data_t keydata, t_params *p, t_complex center)
 {
-	if (keydata.key == KEY_Z || keydata.key == KEY_X || keydata.key == KEY_C
+	if (keydata.key == KEY_W || keydata.key == KEY_X || keydata.key == KEY_C
 		|| keydata.key == KEY_V)
 		julia_args_ch(keydata.key, p);
 	else if (keydata.key == KEY_R || keydata.key == KEY_G
@@ -41,46 +41,41 @@ void	key_handler(mlx_key_data_t keydata, void *param)
 	center.r = p->min_r + (p->max_r - p->min_r) * 0.5;
 	center.i = p->min_i + (p->max_i - p->min_i) * 0.5;
 	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT)
-	{
-		printf("Key pressed: %d\n", keydata.key);
 		handle_key_action(keydata, p, center);
-	}
 }
 
-void scroll_handler(double xdelta, double ydelta, void *param) {
-    t_params *p;
-    t_complex mouse_pos;
-    p = (t_params *)param;
-    int32_t mouse_x, mouse_y;
-    (void)xdelta;
-    
-    mlx_get_mouse_pos(p->mlx, &mouse_x, &mouse_y);
-    
-    // Convert mouse coordinates to complex plane coordinates
-    // Note: Invert Y-axis (mouse_y) because screen coords start at top-left
-	mouse_pos.r = p->min_r + (p->max_r - p->min_r) * mouse_x / (W_WIDTH - 1.0);
-	mouse_pos.i = p->min_i + (p->max_i - p->min_i) * (W_HEIGHT - 1.0 - mouse_y) / (W_HEIGHT - 1.0);
-	
-    if (ydelta > 0)
-        zoom_in(p, mouse_pos.r, mouse_pos.i);
-    else if (ydelta < 0)
-        zoom_out(p, mouse_pos.r, mouse_pos.i);
-    
-    choose_fractol(p);
-}
-
-int zoom(int key, int x, int y, t_params *p)
+void	zoom(t_params *p, double zoom_factor, double mouse_r, double mouse_i)
 {
-    t_complex center;
+	double	new_width;
+	double	new_height;
+	double	center_r;
+	double	center_i;
 
-    printf("key = %d\n", key);
-    center.r = p->min_r + (p->max_r - p->min_r) * x / (W_WIDTH - 1.0);
-    center.i = p->max_i - (p->max_i - p->min_i) * y / (W_HEIGHT - 1.0);  // Inverted Y-axis
-    
-    if (key == MOUSE_DOWN)
-        zoom_out(p, center.r, center.i);
-    if (key == MOUSE_UP)
-        zoom_in(p, center.r, center.i);
-    choose_fractol(p);
-    return (0);
+	center_r = (p->max_r + p->min_r) / 2.0;
+	center_i = (p->max_i + p->min_i) / 2.0;
+	new_width = (p->max_r - p->min_r) / zoom_factor;
+	new_height = (p->max_i - p->min_i) / zoom_factor;
+	p->min_r = mouse_r - (mouse_r - p->min_r) / zoom_factor;
+	p->max_r = mouse_r + (p->max_r - mouse_r) / zoom_factor;
+	p->min_i = mouse_i - (mouse_i - p->min_i) / zoom_factor;
+	p->max_i = mouse_i + (p->max_i - mouse_i) / zoom_factor;
+}
+
+void	scroll_handler(double xdelta, double ydelta, void *param)
+{
+	t_params	*p;
+	t_complex	mouse_pos;
+	int32_t		mouse_x;
+	int32_t		mouse_y;
+
+	p = (t_params *)param;
+	(void)xdelta;
+	mlx_get_mouse_pos(p->mlx, &mouse_x, &mouse_y);
+	mouse_pos.r = p->min_r + (p->max_r - p->min_r) * mouse_x / (W_WIDTH - 1.0);
+	mouse_pos.i = p->max_i - (p->max_i - p->min_i) * mouse_y / (W_HEIGHT - 1.0);
+	if (ydelta > 0)
+		zoom(p, 1.1, mouse_pos.r, mouse_pos.i);
+	else if (ydelta < 0)
+		zoom(p, 1.0 / 1.25, mouse_pos.r, mouse_pos.i);
+	choose_fractol(p);
 }

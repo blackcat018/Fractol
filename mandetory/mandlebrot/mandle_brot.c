@@ -1,32 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   burning_ship.c                                     :+:      :+:    :+:   */
+/*   mandle_brot.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moel-idr <moel-idr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/30 00:02:46 by moel-idr          #+#    #+#             */
-/*   Updated: 2025/03/30 03:04:46 by moel-idr         ###   ########.fr       */
+/*   Created: 2025/03/30 00:03:02 by moel-idr          #+#    #+#             */
+/*   Updated: 2025/04/03 00:23:55 by moel-idr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes.h"
+#include "../../fractol.h"
 
-void	param_init_b(t_params *params)
+void	param_init_m(t_params *params)
 {
 	params->min_r = -2.0;
 	params->max_r = 1.0;
 	params->min_i = -1.5;
 	params->max_i = 1.5;
-	params->r = 2;
-	params->g = 2;
+	params->r = 0;
+	params->g = 0;
 	params->max_iter = 100;
-	params->b = 2;
-	params->fractol_type = 3;
+	params->b = 0;
+	params->fractol_type = 1;
 	params->img = NULL;
 }
 
-int	burningship_set(t_complex c, int max_iter)
+int	mandelbrot_set(t_complex c, int max_iter)
 {
 	int			i;
 	t_complex	z;
@@ -36,12 +36,10 @@ int	burningship_set(t_complex c, int max_iter)
 	z.r = 0;
 	z.i = 0;
 	i = 0;
-	c.r = c.r;
-	c.i = c.i;
 	while (i < max_iter)
 	{
-		zr = fabs(z.r);
-		zi = fabs(z.i);
+		zr = z.r;
+		zi = z.i;
 		z.r = zr * zr - zi * zi + c.r;
 		z.i = 2 * zr * zi + c.i;
 		if (z.r * z.r + z.i * z.i > 4)
@@ -51,24 +49,23 @@ int	burningship_set(t_complex c, int max_iter)
 	return (i);
 }
 
-uint32_t	get_burningship_color(int iter, int max_iter, t_params *p)
+uint32_t	get_mandelbrot_color(int iter, int max_iter, t_params *p)
 {
 	double	t;
+	uint8_t	red;
+	uint8_t	green;
+	uint8_t	blue;
 
-	uint8_t red, green, blue;
 	if (iter == max_iter)
-		return (0x000000FF);
-	else
-	{
-		t = (double)iter / max_iter;
-		red = (uint8_t)(5 * pow(1 - t, 9) * (1 - t) * 15) + p->r;
-		green = (uint8_t)(5 * (t) * pow(1 - t, 2) * 255) + p->g;
-		blue = (uint8_t)(5 * pow(1 - t, 2) * (t) * 255) + p->b;
-		return (create_trgb(255, red, green, blue));
-	}
+		return (0x000000);
+	t = (double)iter / max_iter;
+	red = (uint8_t)(9 * (1 - t) * t * t * t * 255) + p->r;
+	green = (uint8_t)(15 * (1 - t) * (1 - t) * t * t * 255) + p->g;
+	blue = (uint8_t)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255) + p->b;
+	return (create_trgb(255, red, green, blue));
 }
 
-void	draw_burningship(t_params *p)
+void	draw_mandelbrot(t_params *p)
 {
 	t_complex	c;
 	uint32_t	color;
@@ -85,14 +82,13 @@ void	draw_burningship(t_params *p)
 	while (y < W_HEIGHT)
 	{
 		x = 0;
-		while (x < W_WIDTH)
+		while (x++ < W_WIDTH)
 		{
 			c.r = p->min_r + (p->max_r - p->min_r) * x / (W_WIDTH - 1.0);
-			c.i = p->min_i + (p->max_i - p->min_i) * y / (W_HEIGHT - 1.0);
-			iter = burningship_set(c, p->max_iter);
-			color = get_burningship_color(iter, p->max_iter,p);
+			c.i = p->max_i - (p->max_i - p->min_i) * y / (W_HEIGHT - 1.0);
+			iter = mandelbrot_set(c, p->max_iter);
+			color = get_mandelbrot_color(iter, p->max_iter, p);
 			mlx_put_pixel(p->img, x, y, color);
-			x++;
 		}
 		y++;
 	}

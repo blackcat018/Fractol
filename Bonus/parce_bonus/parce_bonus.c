@@ -1,4 +1,16 @@
-#include "../includes.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parce.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: moel-idr <moel-idr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/02 19:05:48 by moel-idr          #+#    #+#             */
+/*   Updated: 2025/04/02 19:05:49 by moel-idr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../fractol.h"
 
 double	ft_parce_it(const char *str)
 {
@@ -51,7 +63,7 @@ double	parse_integer(const char *str, int *pos)
 
 double	parse_decimal(const char *str, int *pos, double *val)
 {
-	double decimal;
+	double	decimal;
 
 	if (str[*pos] == '.')
 	{

@@ -6,7 +6,7 @@
 #    By: moel-idr <moel-idr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/03 17:21:43 by moel-idr          #+#    #+#              #
-#    Updated: 2024/11/08 15:08:09 by moel-idr         ###   ########.fr        #
+#    Updated: 2025/04/03 01:14:10 by moel-idr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,21 +45,20 @@ files = ft_strlen \
         ft_putchar_fd \
         ft_putstr_fd \
         ft_putendl_fd \
-        ft_putnbr_fd \
+        ft_putnbr_fd
 
 bonus = ft_lstnew_bonus \
-         ft_lstadd_front_bonus \
-         ft_lstsize_bonus \
-         ft_lstlast_bonus \
-         ft_lstadd_back_bonus \
-         ft_lstdelone_bonus \
-         ft_lstclear_bonus \
-         ft_lstiter_bonus \
-         ft_lstmap_bonus \
+        ft_lstadd_front_bonus \
+        ft_lstsize_bonus \
+        ft_lstlast_bonus \
+        ft_lstadd_back_bonus \
+        ft_lstdelone_bonus \
+        ft_lstclear_bonus \
+        ft_lstiter_bonus \
+        ft_lstmap_bonus
 
-Compiler = cc
-
-Flags = -Wall -Wextra -Werror
+CC = cc
+CFLAGS = -Wall -Wextra -Werror
 
 CFILES = $(files:%=%.c)
 BFILES = $(bonus:%=%.c)
@@ -70,20 +69,25 @@ OBJS_BONUS = $(bonus:%=%.o)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	ar crs $(NAME) $(OBJS)
+	@ar crs $(NAME) $(OBJS)  # @ silences this command
+	@echo "🟢 libft.a created"
 
 %.o: %.c libft.h
-	$(Compiler) $(Flags) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@echo "🔹 Compiled $<"
 
-bonus: $(NAME) $(OBJS_BONUS)
-	ar rcs $(NAME) $(OBJS_BONUS)
+bonus: $(OBJS_BONUS)
+	@ar rcs $(NAME) $(OBJS_BONUS)
+	@echo "🟢 Bonus objects added to libft.a"
 
 clean:
-	rm -f $(OBJS) $(OBJS_BONUS)
+	@rm -f $(OBJS) $(OBJS_BONUS)
+	@echo "🧹 Object files cleaned"
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
+	@echo "🧹🔥 libft.a removed"
 
 re: fclean all
 
-.PHONY: clean bonus fclean all
+.PHONY: all bonus clean fclean re
